@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  transfersSent     Transfer[] @relation("TransferFrom")
+  transfersReceived Transfer[] @relation("TransferTo")
+  id         String   @id @default(cuid())
+  discordId  String   @unique
+  username   String
+  avatar     String?
+  balance    BigInt   @default(1000)
+  lastPlayAt DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  plays      Play[]
+  settings   UserSetting?
+
+  // ===== RELASI KE AdminAction (YANG LAMA) - SUDAH DIPERBAIKI =====
+  adminActions     AdminAction[] @relation("AdminActions")
+  receivedActions  AdminAction[] @relation("ReceivedActions")
+
+  // ===== RELASI KE AdminCoinAction (YANG BARU) =====
+  adminCoinActions     AdminCoinAction[] @relation("AdminCoinActions")
+  receivedCoinActions  AdminCoinAction[] @relation("ReceivedCoinActions")
+}
+
+model Play {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  bet       BigInt
+  payout    BigInt
+  net       BigInt
+  source    String
+  createdAt DateTime @default(now())
+}
+
+model Transfer {
+  id        String   @id @default(cuid())
+  fromId    String
+  toId      String
+  amount    BigInt
+  createdAt DateTime @default(now())
+  from      User     @relation("TransferFrom", fields: [fromId], references: [discordId])
+  to        User     @relation("TransferTo", fields: [toId], references: [discordId])
+}
+
+// ===== INI MODEL AdminAction YANG SUDAH DIPERBAIKI =====
+model AdminAction {
+  id        String   @id @default(cuid())
+  adminId   String
+  admin     User     @relation("AdminActions", fields: [adminId], references: [id]) // <- INI DITAMBAH
+  targetId  String
+  target    User     @relation("ReceivedActions", fields: [targetId], references: [id]) // <- INI DITAMBAH
+  amount    BigInt
+  reason    String?
+  createdAt DateTime @default(now())
+}
+
+model GameConfig {
+  id        String   @id @default("default")
+  outcomes  Json
+  updatedAt DateTime @updatedAt
+}
+
+// ===== INI MODEL BARU =====
+model UserSetting {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  maxBigWin    Int      @default(1)
+  winStreak    Int      @default(0)
+  currentWin   Int      @default(0)
+  cardCustomization Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AdminCoinAction {
+  id           String   @id @default(cuid())
+  adminId      String
+  admin        User     @relation("AdminCoinActions", fields: [adminId], references: [id])
+  targetUserId String
+  targetUser   User     @relation("ReceivedCoinActions", fields: [targetUserId], references: [id], onDelete: Cascade)
+  actionType   String
+  amount       BigInt?
+  oldValue     Json?
+  newValue     Json?
+  createdAt    DateTime @default(now())
+}

@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(212,175,55,0.08), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(14,92,74,0.15), transparent 45%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 2px, transparent 2px, transparent 8px);
+  min-height: 100vh;
+}
+
+.seal-stamp {
+  font-family: var(--font-brush);
+}
+
+.tile-face {
+  background: linear-gradient(160deg, #FBF6E9 0%, #EDE1C0 55%, #DFCFA0 100%);
+  border: 2px solid #8a6d2f;
+}
+
+.tile-back {
+  background: linear-gradient(160deg, #133b30 0%, #0e5c4a 60%, #0a3a2e 100%);
+  border: 2px solid #d4af37;
+}
+
+.gold-text {
+  background: linear-gradient(90deg, #F2D675, #D4AF37, #F2D675, #D4AF37);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
