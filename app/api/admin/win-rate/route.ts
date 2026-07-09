@@ -68,7 +68,9 @@ export async function POST(req: NextRequest) {
           adminId: admin.id,
           targetUserId: user.id,
           actionType: 'SET_WIN_RATE',
-          oldValue: oldSetting ? { maxBigWin: oldSetting.maxBigWin, currentWin: oldSetting.currentWin } : null,
+          oldValue: oldSetting
+  ? { maxBigWin: oldSetting.maxBigWin, currentWin: oldSetting.currentWin }
+  : undefined,
           newValue: { maxBigWin: setting.maxBigWin, currentWin: setting.currentWin }
         }
       });
