@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
           adminId: admin.id,
           targetUserId: user.id,
           actionType: 'SET_CUSTOM_CARD',
-          oldValue: oldSetting?.cardCustomization || null,
+          oldValue: oldSetting?.cardCustomization ?? undefined,
           newValue: cardData
         }
       });
